@@ -54,7 +54,7 @@ jobs:
         run: npm install eslint --global
 
       - name: Install ESLint jest plugin
-        run: npm install eslint-plugin-jest --global
+        run: npm install eslint-plugin-jest@latest --save-dev
 
       - name: Lint JavaScript files
         run: eslint .
