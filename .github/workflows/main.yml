@@ -56,15 +56,45 @@ jobs:
       - name: Lint JavaScript files
         run: npm run lint
 
-  deploy:
+  deploy_staging:
     needs: [test, lint]
     runs-on: ubuntu-latest
+    environment: staging
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Deploy to Netlify
+      - name: Deploy to Staging
+        uses: netlify/actions/cli@master
+        env:
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+        with:
+          args: deploy --prod --dir .
+
+  request_approval_production:
+    needs: [test, build]
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Request Approval for Production
+        run: echo "Awaiting approval..."
+
+  deploy_production:
+    needs: request_approval_production
+    runs-on: ubuntu-latest
+    environment: production
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Deploy to Production
         uses: netlify/actions/cli@master
         env:
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
