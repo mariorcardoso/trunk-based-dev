@@ -6,7 +6,7 @@ on:
       - main
 
 jobs:
-  build_and_test:
+  common-setup:
     runs-on: ubuntu-latest
 
     steps:
@@ -18,11 +18,27 @@ jobs:
         with:
           node-version: 20
 
+  build_and_test:
+    needs: common-setup
+    runs-on: ubuntu-latest
+
+    steps:
       - name: Install dependencies
         run: npm ci
 
       - name: Run tests
         run: npm test
+
+  lint:
+    needs: common-setup
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Install ESLint
+        run: npm install eslint --global
+
+      - name: Lint JavaScript files
+        run: eslint .
 
   deploy:
     needs: build_and_test
