@@ -50,11 +50,8 @@ jobs:
         with:
           node-version: 20
 
-      - name: Install ESLint
-        run: npm install eslint --global
-
-      - name: Install ESLint jest plugin
-        run: npm install eslint-plugin-jest --save-dev
+      - name: Install dependencies
+        run: npm ci
 
       - name: Lint JavaScript files
         run: eslint .
