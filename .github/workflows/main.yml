@@ -6,7 +6,7 @@ on:
       - main
 
 jobs:
-  common-setup:
+  build: &common
     runs-on: ubuntu-latest
 
     steps:
@@ -18,9 +18,8 @@ jobs:
         with:
           node-version: 20
 
-  build_and_test:
-    needs: common-setup
-    runs-on: ubuntu-latest
+  test:
+    <<: *common
 
     steps:
       - name: Install dependencies
@@ -30,8 +29,7 @@ jobs:
         run: npm test
 
   lint:
-    needs: common-setup
-    runs-on: ubuntu-latest
+    <<: *common
 
     steps:
       - name: Install ESLint
@@ -41,7 +39,7 @@ jobs:
         run: eslint .
 
   deploy:
-    needs: build_and_test
+    needs: [test, lint]
     runs-on: ubuntu-latest
 
     steps:
