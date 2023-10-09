@@ -1,9 +1,8 @@
-name: Main
+name: Pull Request
 
 on:
-  push:
-    branches:
-      - main
+  pull_request:
+    types: [opened]
 
 jobs:
   build:
@@ -56,23 +55,6 @@ jobs:
       - name: Lint JavaScript files
         run: npm run lint
 
-  deploy_staging:
-    needs: [test, lint]
-    runs-on: ubuntu-latest
-    environment: staging
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Deploy to Staging
-        uses: netlify/actions/cli@master
-        env:
-          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
-          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-        with:
-          args: deploy --prod --dir .
-
   request_approval_production:
     needs: [test, lint, build]
     runs-on: ubuntu-latest
@@ -81,20 +63,19 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Request Approval for Production
+      - name: Request Approval for Staging
         run: echo "Awaiting approval..." && sleep 30 # simulate delay in approval
 
-  deploy_production:
-    needs: request_approval_production
+  deploy_staging:
+    needs: [request_approval_production, test, lint]
     runs-on: ubuntu-latest
-    environment: production
-    if: github.ref == 'refs/heads/main'
+    environment: staging
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      - name: Deploy to Production
+      - name: Deploy to Staging
         uses: netlify/actions/cli@master
         env:
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
