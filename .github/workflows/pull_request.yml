@@ -60,7 +60,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: staging
 
-    if: contains(github.event.head_commit.message, 'SPREVIEW')
+    if: github.event.head_commit.message == 'PREVIEW'
 
     steps:
       - name: Checkout code
