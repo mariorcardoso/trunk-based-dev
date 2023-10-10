@@ -55,9 +55,19 @@ jobs:
       - name: Lint JavaScript files
         run: npm run lint
 
+      - name: Get the commit message using GitHub CLI
+        run: |
+          gh auth login --with-token <<< "${{ secrets.GITHUB_TOKEN }}"
+          COMMIT_MESSAGE=$(gh pr view ${{ github.event.pull_request.number }} --json commits -q '.commits[-1].commit.message')
+          echo "Last commit message: $COMMIT_MESSAGE"
+        env:
+          GH_HOST: ${{ github.event.pull_request.base.repo.url }}
+
       - name: Get the commit message
         run: |
           echo "Event: ${{ github.event }}"
+          echo "Event sender: ${{ github.event.sender }}"
+          echo "Event name: ${{ github.event_name }}"
           echo "Commit pl message: ${{ github.event.pull_request.head_commit.message }}"
           echo "Commit message: ${{ github.event.head_commit.message }}"
 
