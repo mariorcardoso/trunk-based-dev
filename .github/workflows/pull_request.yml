@@ -40,6 +40,9 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
 
+    outputs:
+      commit_message: ${{ steps.set-commit.outputs.commit_message }}
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
