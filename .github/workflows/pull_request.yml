@@ -57,11 +57,10 @@ jobs:
 
       - name: Get the commit message using GitHub CLI
         run: |
-          gh auth login --with-token <<< "${{ secrets.MARIO_TOKEN }}"
-          COMMIT_MESSAGE=$(gh pr view ${{ github.event.pull_request.number }} --json commits -q '.commits[-1].commit.message')
+          COMMIT_MESSAGE=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+          "https://api.github.com/repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/commits" | \
+          jq '.[-1].commit.message' -r)
           echo "Last commit message: $COMMIT_MESSAGE"
-        env:
-          GH_HOST: ${{ github.event.pull_request.base.repo.url }}
 
       - name: Get the commit message
         run: |
