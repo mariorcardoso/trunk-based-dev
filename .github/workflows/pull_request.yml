@@ -57,7 +57,7 @@ jobs:
 
       - name: Get the commit message using GitHub CLI
         run: |
-          gh auth login --with-token <<< "${{ secrets.GITHUB_TOKEN }}"
+          gh auth login --with-token <<< "${{ secrets.MARIO_TOKEN }}"
           COMMIT_MESSAGE=$(gh pr view ${{ github.event.pull_request.number }} --json commits -q '.commits[-1].commit.message')
           echo "Last commit message: $COMMIT_MESSAGE"
         env:
