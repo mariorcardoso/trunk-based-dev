@@ -57,6 +57,7 @@ jobs:
 
       - name: Get the commit message
         run: |
+          echo "Event: ${{ github.event }}"
           echo "Commit pl message: ${{ github.event.pull_request.head_commit.message }}"
           echo "Commit message: ${{ github.event.head_commit.message }}"
 
