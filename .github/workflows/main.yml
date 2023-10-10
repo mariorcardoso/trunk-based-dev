@@ -73,19 +73,8 @@ jobs:
         with:
           args: deploy --prod --dir .
 
-  request_approval_production:
-    needs: [test, lint, build]
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Request Approval for Production
-        run: echo "Awaiting approval..." && sleep 30 # simulate delay in approval
-
   deploy_production:
-    needs: request_approval_production
+    needs: [deploy_staging]
     runs-on: ubuntu-latest
     environment: production
     if: github.ref == 'refs/heads/main'

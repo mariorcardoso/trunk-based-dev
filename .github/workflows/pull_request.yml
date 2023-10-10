@@ -55,19 +55,8 @@ jobs:
       - name: Lint JavaScript files
         run: npm run lint
 
-  request_approval_production:
-    needs: [test, lint, build]
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Request Approval for Staging
-        run: echo "Awaiting approval..." && sleep 30 # simulate delay in approval
-
   deploy_staging:
-    needs: [request_approval_production, test, lint]
+    needs: [test, lint]
     runs-on: ubuntu-latest
     environment: staging
 
