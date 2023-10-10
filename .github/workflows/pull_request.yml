@@ -56,24 +56,16 @@ jobs:
         run: npm run lint
 
       - name: Get the commit message using GitHub CLI
-       run: |
-        COMMIT_MESSAGE=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-        "https://api.github.com/repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/commits" | \
-        jq '.[-1].commit.message' -r)
-        echo "Last commit message: $COMMIT_MESSAGE"
-        echo "::set-output name=commit_message::$COMMIT_MESSAGE"
+        run: |
+          COMMIT_MESSAGE=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+          "https://api.github.com/repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/commits" | \
+          jq '.[-1].commit.message' -r)
+          echo "Last commit message: $COMMIT_MESSAGE"
+          echo "::set-output name=commit_message::$COMMIT_MESSAGE"
 
       - name: Set the commit message output
         id: set-commit
         run: echo "::set-output name=commit_message::${{ steps.get-commit.outputs.commit_message }}"
-
-      # - name: Get the commit message
-      #   run: |
-      #     echo "Event: ${{ github.event }}"
-      #     echo "Event sender: ${{ github.event.sender }}"
-      #     echo "Event name: ${{ github.event_name }}"
-      #     echo "Commit pl message: ${{ github.event.pull_request.head_commit.message }}"
-      #     echo "Commit message: ${{ github.event.head_commit.message }}"
 
   deploy_staging:
     needs: [test, lint]
